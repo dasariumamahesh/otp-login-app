@@ -1,7 +1,7 @@
 const speakeasy = require('speakeasy');
 const mail = require("./sendEmail");
 const redis = require("redis");
-const client = redis.createClient();
+const client = redis.createClient( { url: process.env.REDIS_URL});
 require('dotenv').config();
 
 const secret = process.env.SECRET;
