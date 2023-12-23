@@ -1,0 +1,132 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "OTP Login app",
+    "version": "2023-11-30T13:32:20Z"
+  },
+  "servers": [
+    {
+      "url": "https://otp-login-app.onrender.com"
+    }
+  ],
+  "paths": {
+    "/generate-otp": {
+      "post": {
+        "tags": [
+          "login"
+        ],
+        "deprecated": false,
+        "summary": "OTP for login",
+        "description": "Request OTP for login using email",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/generate-otp-schema"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OTP sent to mail sucessfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/otp-200response-schema"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many tries. OTP already sent. Retry after \"x\" min",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/otp-429response-schema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "login"
+        ],
+        "deprecated": false,
+        "summary": "Login into your account",
+        "description": "Login into your account using OTP",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login-schema"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/generate-otp-schema"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "generate-otp-schema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "john@email.com"
+          }
+        }
+      },
+      "login-schema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "john@email.com"
+          },
+          "otp": {
+            "type": "number",
+            "example": 123456
+          }
+        }
+      },
+      "otp-200response-schema": {
+        "type": "object",
+        "properties": {
+          "Message": {
+            "type": "string",
+            "example": "Check you Email for OTP"
+          }
+        }
+      },
+      "otp-429response-schema": {
+        "type": "object",
+        "properties": {
+          "Message": {
+            "type": "string",
+            "example": "OTP already sent. For a new OTP retry after 5 min"
+          }
+        }
+      }
+    }
+  }
+}

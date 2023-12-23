@@ -8,7 +8,8 @@ async function checkOtp(req, res, next) {
   if (!userDetails) {
     next();
   } else {
-    res.status(500).send({ Message: "OTP already sent. For a new OTP retry after 5 min" });
+    const ttl = Math.ceil((await client.ttl(req.body.email))/60);
+    res.status(429).send({ Message: `OTP already sent. For a new OTP retry after ${ttl} min` });
   }
 };
 
