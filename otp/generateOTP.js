@@ -18,7 +18,7 @@ async function generateOtp(req, res) {
 
         mail.sendmail(req.body.email, otp).then(async (resolve, reject) => {
             if (resolve) {
-                await client.set(req.body.email, JSON.stringify({ otp, tries: 3 }), { EX: 30, NX: true });
+                await client.set(req.body.email, JSON.stringify({ otp, tries: 3 }), { EX: 300, NX: true });
                 res.status(200).send({ Message: resolve.message })
             } else {
                 res.status(500).send({ Error: reject.message })
