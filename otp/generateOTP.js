@@ -16,7 +16,8 @@ async function generateOtp(req, res) {
             secret: secret,
             encoding: 'base32'
         });
-        const html = pug.renderFile(`/email-templates/otp.pug`, { otp });
+        console.log(__dirname);
+        const html = pug.renderFile(`${__dirname}/email-templates/otp.pug`, { otp });
         mail.sendmail(req.body.email, html).then(async (resolve, reject) => {
             if (resolve) {
                 await client.set(req.body.email, JSON.stringify({ otp, tries: 3 }), { EX: 300, NX: true });
