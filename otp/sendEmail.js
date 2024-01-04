@@ -8,13 +8,13 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-module.exports.sendmail = (mail, otp)=>{
+module.exports.sendmail = (mail, html)=>{
     return new Promise((resolve, reject)=>{
         const mailOptions = {
             from: process.env.EMAIL,
             to: `${mail}`,
-            subject: 'OTP from login app',
-            text: `Your OTP is ${otp}`
+            subject: 'OTP from login-app',
+            html
           };
           
           transporter.sendMail(mailOptions, (error, info) => {

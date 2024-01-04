@@ -2,6 +2,7 @@ const speakeasy = require('speakeasy');
 const mail = require("./sendEmail");
 const redis = require("redis");
 const client = redis.createClient( { url: process.env.REDIS_URL});
+const pug = require('pug');
 require('dotenv').config();
 
 const secret = process.env.SECRET;
@@ -15,8 +16,8 @@ async function generateOtp(req, res) {
             secret: secret,
             encoding: 'base32'
         });
-
-        mail.sendmail(req.body.email, otp).then(async (resolve, reject) => {
+        const html = pug.renderFile(`email-templates/otp.pug`, { otp });
+        mail.sendmail(req.body.email, html).then(async (resolve, reject) => {
             if (resolve) {
                 await client.set(req.body.email, JSON.stringify({ otp, tries: 3 }), { EX: 300, NX: true });
                 res.status(200).send({ Message: resolve.message })
@@ -25,6 +26,7 @@ async function generateOtp(req, res) {
             }
         })
     } catch (error) {
+        console.log(error);
         res.status(500).send({ Message: "OTP generation failed" })
     }
 }
